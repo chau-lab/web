@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aquagrow - Hệ Thống Tưới Cây Thông Minh</title>
+    <title>Aquagrow</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -57,9 +57,17 @@
             }
             
             .robot-container {
+                position: relative;
+                display: flex;
+                justify-content: center;
                 width: 100%;
-                max-width: 200px;
-                margin-bottom: 20px;
+                max-width: 250px;
+                margin-bottom: 30px;
+            }
+            
+            .robot-image {
+                width: 150px;
+                height: auto;
             }
             
             .dashboard {
@@ -96,15 +104,46 @@
             }
             
             .speech-bubble {
-                width: 180px;
-                left: 50%;
-                transform: translateX(-50%);
+                width: 200px;
+                left: 60%;
+                transform: translateX(-30%);
                 top: -80px;
+                background-color: rgba(0, 0, 0, 0.8);
+                color: white;
+                padding: 15px;
+                border-radius: 15px;
+                font-size: 14px;
+                z-index: 100;
+            }
+            
+            .speech-bubble:after {
+                right: 70%;
+                border-top-color: rgba(0, 0, 0, 0.8);
+            }
+            
+            .water-request {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 12px;
             }
             
             .water-request button {
-                padding: 6px 12px;
-                font-size: 12px;
+                padding: 8px 20px;
+                font-size: 14px;
+                border-radius: 20px;
+                border: none;
+                font-weight: bold;
+                cursor: pointer;
+            }
+            
+            #yes-btn {
+                background-color: #4CAF50;
+                color: white;
+            }
+            
+            #no-btn {
+                background-color: #f44336;
+                color: white;
             }
         }
         
@@ -211,25 +250,7 @@
             height: 100%;
             background: linear-gradient(90deg, #3498db, #2ecc71);
             border-radius: 10px;
-            transition: width 1.5s ease-in-out;
-            position: relative;
-        }
-        
-        .moisture-fill::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            height: 100%;
-            width: 5px;
-            background-color: rgba(255, 255, 255, 0.3);
-            animation: moisture-pulse 1.5s infinite;
-        }
-        
-        @keyframes moisture-pulse {
-            0% { opacity: 0.2; }
-            50% { opacity: 0.8; }
-            100% { opacity: 0.2; }
+            transition: width 1.5s ease-in-out, background 0.5s ease;
         }
         
         #moisture-percentage {
@@ -251,21 +272,12 @@
         
         <main>
             <div class="robot-container">
-                <div class="robot">
-                    <img src="robot.jpg" alt="Robot hỗ trợ tưới cây" class="robot-image">
-                    <div class="speech-bubble hidden" id="speech-bubble">
-                        <p id="speech-text">Cây của bạn cần nước rồi!</p>
-                        <div class="water-request hidden" id="water-request">
-                            <button id="yes-btn">Có</button>
-                            <button id="no-btn">Không</button>
-                        </div>
-                    </div>
-                </div>
+               >
             </div>
             
             <div class="dashboard">
                 <div class="card">
-                    <h3>Lượng Ẩm Đất</h3>
+                    <h3>Độ Ẩm Đất</h3>
                     <div class="moisture-level">
                         <div class="moisture-indicator">
                             <div class="moisture-fill" id="moisture-fill"></div>
@@ -649,57 +661,35 @@
                 });
             }
             
-            // Function to update moisture level gradually (realistic animation)
+            // Function to update moisture level gradually (simplified, no animations)
             function updateMoistureLevel() {
                 // Get current moisture level
                 const currentMoisture = parseInt(moisturePercentage.textContent);
                 // Target moisture level (90-95%)
                 const targetMoisture = Math.floor(Math.random() * 6) + 90;
-                // Step for the animation (smaller steps = smoother animation)
-                const step = 2;
-                // Duration between steps in ms (higher = slower animation)
-                const stepDuration = 100;
                 
-                // Animate the moisture level increase
-                function animateMoisture(current) {
-                    if (current < targetMoisture) {
-                        // Calculate next step
-                        let next = current + step;
-                        // Don't exceed target
-                        if (next > targetMoisture) next = targetMoisture;
-                        
-                        // Update display
-                        moisturePercentage.textContent = next + '%';
-                        moistureFill.style.width = next + '%';
-                        
-                        // Different colors for different moisture levels
-                        if (next < 30) {
-                            moistureStatus.textContent = 'Rất Khô';
-                            moistureStatus.style.color = 'var(--danger-color)';
-                            moistureFill.style.background = 'linear-gradient(90deg, #e74c3c, #e67e22)';
-                        } else if (next < 60) {
-                            moistureStatus.textContent = 'Khô';
-                            moistureStatus.style.color = 'var(--warning-color)';
-                            moistureFill.style.background = 'linear-gradient(90deg, #f39c12, #f1c40f)';
-                        } else if (next < 80) {
-                            moistureStatus.textContent = 'Ổn định';
-                            moistureStatus.style.color = 'var(--info-color)';
-                            moistureFill.style.background = 'linear-gradient(90deg, #3498db, #2980b9)';
-                        } else {
-                            moistureStatus.textContent = 'Tốt';
-                            moistureStatus.style.color = 'var(--success-color)';
-                            moistureFill.style.background = 'linear-gradient(90deg, #2ecc71, #27ae60)';
-                        }
-                        
-                        // Continue animation
-                        setTimeout(function() {
-                            animateMoisture(next);
-                        }, stepDuration);
-                    }
+                // Update display immediately
+                moisturePercentage.textContent = targetMoisture + '%';
+                moistureFill.style.width = targetMoisture + '%';
+                
+                // Different colors for different moisture levels
+                if (targetMoisture < 30) {
+                    moistureStatus.textContent = 'Rất Khô';
+                    moistureStatus.style.color = 'var(--danger-color)';
+                    moistureFill.style.background = 'linear-gradient(90deg, #e74c3c, #e67e22)';
+                } else if (targetMoisture < 60) {
+                    moistureStatus.textContent = 'Khô';
+                    moistureStatus.style.color = 'var(--warning-color)';
+                    moistureFill.style.background = 'linear-gradient(90deg, #f39c12, #f1c40f)';
+                } else if (targetMoisture < 80) {
+                    moistureStatus.textContent = 'Ổn định';
+                    moistureStatus.style.color = 'var(--info-color)';
+                    moistureFill.style.background = 'linear-gradient(90deg, #3498db, #2980b9)';
+                } else {
+                    moistureStatus.textContent = 'Tốt';
+                    moistureStatus.style.color = 'var(--success-color)';
+                    moistureFill.style.background = 'linear-gradient(90deg, #2ecc71, #27ae60)';
                 }
-                
-                // Start animation
-                animateMoisture(currentMoisture);
             }
             
             // Function to add watering history
