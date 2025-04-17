@@ -7,6 +7,238 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Entry animations */
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            0% { transform: translateY(50px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes pulseScale {
+            0% { transform: scale(0.95); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .app-container {
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .card {
+            animation: slideUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+        
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+        .card:nth-child(5) { animation-delay: 0.5s; }
+        .card:nth-child(6) { animation-delay: 0.6s; }
+        
+        .robot {
+            animation: pulseScale 1s ease-out;
+        }
+        
+        /* Improved mobile responsive design */
+        @media screen and (max-width: 768px) {
+            header {
+                padding: 10px;
+            }
+            
+            main {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .robot-container {
+                width: 100%;
+                max-width: 200px;
+                margin-bottom: 20px;
+            }
+            
+            .dashboard {
+                width: 100%;
+                padding: 0 15px;
+            }
+            
+            .card {
+                min-width: 100%;
+                margin-bottom: 15px;
+            }
+            
+            .moisture-indicator {
+                height: 15px;
+            }
+            
+            .days-container {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 8px;
+            }
+            
+            .day {
+                padding: 8px 0;
+                font-size: 12px;
+            }
+            
+            .hourly-forecast-container {
+                padding: 5px;
+            }
+            
+            .hourly-item {
+                min-width: 60px;
+            }
+            
+            .speech-bubble {
+                width: 180px;
+                left: 50%;
+                transform: translateX(-50%);
+                top: -80px;
+            }
+            
+            .water-request button {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+        }
+        
+        /* Floating hearts animation adjustments */
+        .floating-heart {
+            position: absolute;
+            bottom: -100px;
+            left: var(--left);
+            width: var(--size);
+            height: var(--size);
+            background-color: red;
+            transform: rotate(45deg);
+            opacity: 0;
+            animation: float-heart var(--duration) var(--delay) infinite;
+            z-index: 10000;
+        }
+        
+        /* Custom popup styling */
+        .custom-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        
+        .custom-popup.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .custom-popup.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .popup-content {
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            width: 85%;
+            max-width: 400px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: scale(0.8);
+            transition: transform 0.3s;
+            text-align: center;
+        }
+        
+        .custom-popup.show .popup-content {
+            transform: scale(1);
+        }
+        
+        .popup-header {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+        
+        .popup-header i {
+            font-size: 48px;
+            margin-bottom: 10px;
+            color: #4CAF50;
+        }
+        
+        #popup-message {
+            margin-bottom: 20px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        
+        #popup-close {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        #popup-close:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        /* Enhanced moisture indicator styling */
+        .moisture-indicator {
+            position: relative;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .moisture-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            border-radius: 10px;
+            transition: width 1.5s ease-in-out;
+            position: relative;
+        }
+        
+        .moisture-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 100%;
+            width: 5px;
+            background-color: rgba(255, 255, 255, 0.3);
+            animation: moisture-pulse 1.5s infinite;
+        }
+        
+        @keyframes moisture-pulse {
+            0% { opacity: 0.2; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0.2; }
+        }
+        
+        #moisture-percentage {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: var(--primary-color);
+            transition: all 0.5s ease;
+        }
+    </style>
 </head>
 <body>
     <div class="app-container">
@@ -23,7 +255,7 @@
                     <img src="robot.jpg" alt="Robot hỗ trợ tưới cây" class="robot-image">
                     <div class="speech-bubble hidden" id="speech-bubble">
                         <p id="speech-text">Cây của bạn cần nước rồi!</p>
-                        <div class="water-request">
+                        <div class="water-request hidden" id="water-request">
                             <button id="yes-btn">Có</button>
                             <button id="no-btn">Không</button>
                         </div>
@@ -96,9 +328,7 @@
                 <div class="card hourly-weather-card">
                     <h3>Dự Báo Thời Tiết</h3>
                     <div class="hourly-date-selector">
-                        <button class="date-nav-btn" id="prev-date"><i class="fas fa-chevron-left"></i></button>
                         <div class="current-date">Thứ Bảy, 19/04/2025</div>
-                        <button class="date-nav-btn" id="next-date"><i class="fas fa-chevron-right"></i></button>
                     </div>
                     <div class="hourly-forecast-container">
                         <div class="hourly-forecast-scroll">
@@ -287,14 +517,33 @@
         </div>
     </div>
     
-    <script src="script.js"></script>
-    
-    <!-- Temporary debug button for testing, can be removed in production -->
-    <div style="position: fixed; bottom: 10px; right: 10px; z-index: 1000;">
-        <button id="test-watering" style="padding: 10px; background: red; color: white; border: none; border-radius: 5px; cursor: pointer;">
-            Test Watering Animation
-        </button>
+    <!-- Heart animation container (initially hidden) -->
+    <div id="heart-animation" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9000; pointer-events: none; display: flex; justify-content: center; align-items: center;">
+        <div style="position: relative; width: 100%; height: 100%;">
+            <!-- Multiple hearts with different sizes and animations -->
+            <div class="floating-heart" style="--size: 30px; --delay: 0s; --duration: 4s; --left: 40%;"></div>
+            <div class="floating-heart" style="--size: 50px; --delay: 0.5s; --duration: 5s; --left: 30%;"></div>
+            <div class="floating-heart" style="--size: 25px; --delay: 1s; --duration: 4.5s; --left: 60%;"></div>
+            <div class="floating-heart" style="--size: 40px; --delay: 1.5s; --duration: 5.5s; --left: 70%;"></div>
+            <div class="floating-heart" style="--size: 35px; --delay: 2s; --duration: 6s; --left: 50%;"></div>
+            <div class="floating-heart" style="--size: 45px; --delay: 2.5s; --duration: 5s; --left: 20%;"></div>
+            <div class="floating-heart" style="--size: 30px; --delay: 3s; --duration: 4.5s; --left: 80%;"></div>
+        </div>
     </div>
+    
+    <!-- Add custom notification popup -->
+    <div id="custom-popup" class="custom-popup hidden">
+        <div class="popup-content">
+            <div class="popup-header">
+                <i class="fas fa-check-circle"></i>
+                <h3 id="popup-title">Thông Báo</h3>
+            </div>
+            <p id="popup-message">Nội dung thông báo</p>
+            <button id="popup-close">Đã hiểu</button>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
     
     <script>
         // Emergency backup script to ensure the animation can be triggered
@@ -303,19 +552,206 @@
             
             // Direct references to DOM elements
             const pumpAnimation = document.getElementById('pump-animation');
+            const heartAnimation = document.getElementById('heart-animation');
             const pumpButton = document.getElementById('pump-button');
+            const speechBubble = document.getElementById('speech-bubble');
+            const robotSpeech = document.getElementById('speech-text');
+            const waterRequest = document.getElementById('water-request');
             const yesBtn = document.getElementById('yes-btn');
             const noBtn = document.getElementById('no-btn');
-            const speechBubble = document.getElementById('speech-bubble');
             const historyList = document.getElementById('history-list');
+            const moisturePercentage = document.getElementById('moisture-percentage');
+            const moistureFill = document.getElementById('moisture-fill');
+            const moistureStatus = document.getElementById('moisture-status');
+            const customPopup = document.getElementById('custom-popup');
+            const popupTitle = document.getElementById('popup-title');
+            const popupMessage = document.getElementById('popup-message');
+            const popupClose = document.getElementById('popup-close');
             
-            console.log("EMERGENCY REFERENCES:", {
-                pumpAnimation,
-                pumpButton,
-                yesBtn,
-                noBtn,
-                speechBubble
-            });
+            // Track robot speech state to prevent overlaps
+            let isRobotSpeaking = false;
+            let pendingSpeech = null;
+            
+            // Initial moisture setup (60-65%)
+            const initialMoisture = Math.floor(Math.random() * 6) + 60;
+            moisturePercentage.textContent = initialMoisture + '%';
+            moistureFill.style.width = initialMoisture + '%';
+            
+            // Custom popup function
+            function showPopup(title, message) {
+                if (!customPopup) return;
+                
+                popupTitle.textContent = title;
+                popupMessage.textContent = message;
+                customPopup.classList.remove('hidden');
+                customPopup.classList.add('show');
+                
+                // Add event listener to close button
+                popupClose.onclick = function() {
+                    hidePopup();
+                };
+            }
+            
+            function hidePopup() {
+                if (!customPopup) return;
+                
+                customPopup.classList.remove('show');
+                customPopup.classList.add('hidden');
+            }
+            
+            // If popup close button exists, add event listener
+            if (popupClose) {
+                popupClose.addEventListener('click', hidePopup);
+            }
+            
+            // Fix scheduling functionality
+            const setScheduleBtn = document.getElementById('set-schedule');
+            const waterTimeInput = document.getElementById('water-time');
+            const dayElements = document.querySelectorAll('.day');
+            let selectedDays = [];
+            
+            if (setScheduleBtn && dayElements.length > 0) {
+                // Day selection
+                dayElements.forEach(day => {
+                    day.addEventListener('click', () => {
+                        day.classList.toggle('active');
+                        
+                        const dayValue = day.getAttribute('data-day');
+                        if (day.classList.contains('active')) {
+                            if (!selectedDays.includes(dayValue)) {
+                                selectedDays.push(dayValue);
+                            }
+                        } else {
+                            selectedDays = selectedDays.filter(d => d !== dayValue);
+                        }
+                    });
+                });
+                
+                // Set Schedule Button - FIX: Prevent animation when setting schedule
+                setScheduleBtn.addEventListener('click', () => {
+                    const scheduleTime = waterTimeInput.value;
+                    
+                    if (scheduleTime && selectedDays.length > 0) {
+                        // Create schedule entry in history
+                        const daysText = selectedDays.join(', ');
+                        addWateringHistory('Lịch tưới', `${daysText} lúc ${scheduleTime}`);
+                        
+                        // Show custom popup instead of alert
+                        showPopup('Đặt Lịch Thành Công', `Đã đặt lịch tưới cho ${daysText} lúc ${scheduleTime}`);
+                        
+                        // Show robot confirmation with setTimeout
+                        setTimeout(() => {
+                            robotSpeak(`Tôi sẽ tưới nước vào lúc ${scheduleTime} vào các ngày ${daysText}!`, false, 5000);
+                        }, 300);
+                    } else {
+                        showPopup('Thông Báo', 'Vui lòng chọn thời gian và ít nhất một ngày');
+                    }
+                });
+            }
+            
+            // Function to update moisture level gradually (realistic animation)
+            function updateMoistureLevel() {
+                // Get current moisture level
+                const currentMoisture = parseInt(moisturePercentage.textContent);
+                // Target moisture level (90-95%)
+                const targetMoisture = Math.floor(Math.random() * 6) + 90;
+                // Step for the animation (smaller steps = smoother animation)
+                const step = 2;
+                // Duration between steps in ms (higher = slower animation)
+                const stepDuration = 100;
+                
+                // Animate the moisture level increase
+                function animateMoisture(current) {
+                    if (current < targetMoisture) {
+                        // Calculate next step
+                        let next = current + step;
+                        // Don't exceed target
+                        if (next > targetMoisture) next = targetMoisture;
+                        
+                        // Update display
+                        moisturePercentage.textContent = next + '%';
+                        moistureFill.style.width = next + '%';
+                        
+                        // Different colors for different moisture levels
+                        if (next < 30) {
+                            moistureStatus.textContent = 'Rất Khô';
+                            moistureStatus.style.color = 'var(--danger-color)';
+                            moistureFill.style.background = 'linear-gradient(90deg, #e74c3c, #e67e22)';
+                        } else if (next < 60) {
+                            moistureStatus.textContent = 'Khô';
+                            moistureStatus.style.color = 'var(--warning-color)';
+                            moistureFill.style.background = 'linear-gradient(90deg, #f39c12, #f1c40f)';
+                        } else if (next < 80) {
+                            moistureStatus.textContent = 'Ổn định';
+                            moistureStatus.style.color = 'var(--info-color)';
+                            moistureFill.style.background = 'linear-gradient(90deg, #3498db, #2980b9)';
+                        } else {
+                            moistureStatus.textContent = 'Tốt';
+                            moistureStatus.style.color = 'var(--success-color)';
+                            moistureFill.style.background = 'linear-gradient(90deg, #2ecc71, #27ae60)';
+                        }
+                        
+                        // Continue animation
+                        setTimeout(function() {
+                            animateMoisture(next);
+                        }, stepDuration);
+                    }
+                }
+                
+                // Start animation
+                animateMoisture(currentMoisture);
+            }
+            
+            // Function to add watering history
+            function addWateringHistory(type, amount) {
+                if (!historyList) return;
+                
+                const now = new Date();
+                const dateStr = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}, ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+                
+                const newItem = document.createElement('li');
+                newItem.innerHTML = `<span class="date">${dateStr}</span> - ${type}: ${amount}`;
+                historyList.insertBefore(newItem, historyList.firstChild);
+            }
+            
+            // Improved robot speech function to prevent overlaps
+            function robotSpeak(message, showButtons = false, duration = 3000) {
+                if (isRobotSpeaking) {
+                    // If already speaking, queue this message
+                    pendingSpeech = { message, showButtons, duration };
+                    return;
+                }
+                
+                isRobotSpeaking = true;
+                
+                if (robotSpeech && speechBubble && waterRequest) {
+                    robotSpeech.textContent = message;
+                    speechBubble.classList.remove('hidden');
+                    
+                    if (showButtons) {
+                        waterRequest.classList.remove('hidden');
+                    } else {
+                        waterRequest.classList.add('hidden');
+                    }
+                    
+                    // Auto hide after duration (unless showing buttons)
+                    if (!showButtons) {
+                        setTimeout(() => {
+                            speechBubble.classList.add('hidden');
+                            isRobotSpeaking = false;
+                            
+                            // Check if there's a pending speech
+                            if (pendingSpeech) {
+                                const { message, showButtons, duration } = pendingSpeech;
+                                pendingSpeech = null;
+                                setTimeout(() => {
+                                    robotSpeak(message, showButtons, duration);
+                                }, 500); // Small delay before showing next speech
+                            }
+                        }, duration);
+                    }
+                }
+            }
             
             // Direct function to show animation
             function showAnimation() {
@@ -329,26 +765,34 @@
                     pumpAnimation.style.opacity = '1';
                     pumpAnimation.style.zIndex = '9999';
                     
-                    // Log animation state for debugging
-                    console.log("ANIMATION ELEMENT:", pumpAnimation);
-                    console.log("ANIMATION STYLE:", {
-                        display: pumpAnimation.style.display,
-                        visibility: pumpAnimation.style.visibility,
-                        opacity: pumpAnimation.style.opacity,
-                        classList: [...pumpAnimation.classList]
-                    });
-                    
-                    // Hide after 5 seconds
+                    // Hide pump animation after 3 seconds
                     setTimeout(() => {
+                        // Hide pump animation
                         pumpAnimation.classList.add('hidden');
                         pumpAnimation.classList.remove('show-animation');
                         pumpAnimation.style.display = 'none';
-                        pumpAnimation.style.visibility = 'hidden';
-                        pumpAnimation.style.opacity = '0';
-                    }, 5000);
+                        
+                        // Update moisture level with animation
+                        updateMoistureLevel();
+                        
+                        // Show thank you message (without buttons)
+                        robotSpeak("Yahhh, cảm ơn chủ nhân ạ!", false, 3000);
+                        
+                        // Show heart animation
+                        if (heartAnimation) {
+                            heartAnimation.classList.remove('hidden');
+                            heartAnimation.style.display = 'flex';
+                            
+                            // Hide heart animation after 4 seconds
+                            setTimeout(() => {
+                                heartAnimation.classList.add('hidden');
+                                heartAnimation.style.display = 'none';
+                            }, 4000);
+                        }
+                    }, 3000);
                 } else {
                     console.error("ANIMATION ELEMENT NOT FOUND");
-                    alert('Không tìm thấy phần tử hiệu ứng tưới nước!');
+                    showPopup('Lỗi', 'Không tìm thấy phần tử hiệu ứng tưới nước!');
                 }
             }
             
@@ -358,71 +802,55 @@
                     console.log("EMERGENCY PUMP BUTTON CLICKED");
                     showAnimation();
                     
-                    // Add history entry
-                    const now = new Date();
-                    const dateStr = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}, ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
-                    
-                    if (historyList) {
-                        const newItem = document.createElement('li');
-                        newItem.innerHTML = `<span class="date">${dateStr}</span> - Tưới thủ công: 250ml`;
-                        historyList.insertBefore(newItem, historyList.firstChild);
-                    }
+                    // Add history entry with exact time
+                    addWateringHistory('Tưới thủ công', '250ml');
                     
                     return false; // Prevent default
                 };
             }
             
+            // Add yes/no button handlers
             if (yesBtn) {
-                yesBtn.onclick = function(e) {
-                    console.log("EMERGENCY YES BUTTON CLICKED");
-                    showAnimation();
-                    
-                    // Hide speech bubble
+                yesBtn.onclick = function() {
+                    console.log("YES BUTTON CLICKED");
+                    // Hide the speech bubble
                     if (speechBubble) {
                         speechBubble.classList.add('hidden');
+                        isRobotSpeaking = false;
                     }
+                    
+                    // Show watering animation
+                    showAnimation();
                     
                     // Add history entry
-                    const now = new Date();
-                    const dateStr = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}, ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+                    addWateringHistory('Tưới theo yêu cầu', '250ml');
                     
-                    if (historyList) {
-                        const newItem = document.createElement('li');
-                        newItem.innerHTML = `<span class="date">${dateStr}</span> - Tưới theo yêu cầu: 250ml`;
-                        historyList.insertBefore(newItem, historyList.firstChild);
-                    }
-                    
-                    return false; // Prevent default
-                };
-            }
-            
-            if (noBtn) {
-                noBtn.onclick = function(e) {
-                    console.log("EMERGENCY NO BUTTON CLICKED");
-                    
-                    // Hide speech bubble
-                    if (speechBubble) {
-                        speechBubble.classList.add('hidden');
-                    }
-                    
-                    return false; // Prevent default
-                };
-            }
-            
-            // Test button
-            const testBtn = document.getElementById('test-watering');
-            if (testBtn) {
-                testBtn.onclick = function() {
-                    console.log("EMERGENCY TEST BUTTON CLICKED");
-                    showAnimation();
                     return false;
                 };
             }
             
-            // Log info about the pump animation element
-            if (pumpAnimation) {
-                console.log("PUMP ANIMATION STYLES:", window.getComputedStyle(pumpAnimation));
+            if (noBtn) {
+                noBtn.onclick = function() {
+                    console.log("NO BUTTON CLICKED");
+                    // Just hide the speech bubble
+                    if (speechBubble) {
+                        speechBubble.classList.add('hidden');
+                        isRobotSpeaking = false;
+                    }
+                    return false;
+                };
             }
+            
+            // Simplified sequence of robot speeches (only 3 cases)
+            setTimeout(() => {
+                // 1. Initial greeting
+                robotSpeak("Xin chào! Tôi sẽ giúp bạn chăm sóc cây.", false, 5000);
+                
+                // 2. Ask about watering after greeting (5 seconds after greeting ends)
+                setTimeout(() => {
+                    robotSpeak("Cây của bạn cần nước rồi!", true);
+                }, 5500);
+            }, 1000);
         });
     </script>
 </body>
