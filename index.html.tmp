@@ -291,7 +291,7 @@
                         <div class="moisture-indicator">
                             <div class="moisture-fill" id="moisture-fill"></div>
                         </div>
-                        <span id="moisture-percentage">65%</span>
+                        <span id="moisture-percentage">65</span>
                     </div>
                     <div class="moisture-status">
                         Trạng thái: <span id="moisture-status">Ổn định</span>

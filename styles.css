@@ -1180,4 +1180,5 @@ main {
     .current-date {
         font-size: 0.9rem;
     }
-} 
+} / *   F l o a t   a n i m a t i o n   f o r   r o b o t   * /   . r o b o t - i m a g e   {   a n i m a t i o n :   f l o a t   3 s   e a s e - i n - o u t   i n f i n i t e ;   }  
+ 
