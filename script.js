@@ -27,7 +27,9 @@ window.addEventListener('DOMContentLoaded', () => {
     // Make sure UI elements are in correct state
     pumpAnimation.classList.add('hidden');
     
-    // Instead of initial greeting, we'll set a random timer to show thirsty message
+    // Instead of thirsty message, welcome the user
+    /*
+    // Old thirsty message - removed
     const randomTime = Math.floor(Math.random() * 8000) + 5000; // 5-13 seconds
     
     setTimeout(() => {
@@ -38,6 +40,11 @@ window.addEventListener('DOMContentLoaded', () => {
             updateMoisture(30);
         });
     }, randomTime);
+    */
+    
+    // Initial moisture value should be between 60-65%
+    const initialMoisture = Math.floor(Math.random() * 6) + 60;
+    updateMoisture(initialMoisture);
 });
 
 // Text typing animation
@@ -221,6 +228,7 @@ function addWateringHistory(text) {
 }
 
 // Function to periodically make the robot thirsty
+/*
 function makeRobotThirsty() {
     // Only make thirsty if not already thirsty and moisture is good
     if (!isThirsty && currentMoisture > 45 && speechBubble.classList.contains('hidden')) {
@@ -241,6 +249,7 @@ function makeRobotThirsty() {
 
 // Run thirsty check every minute
 setInterval(makeRobotThirsty, 60000);
+*/
 
 // Weather forecast data (fake)
 // This would normally come from an API

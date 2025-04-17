@@ -26,6 +26,14 @@
             100% { transform: scale(1); }
         }
         
+        /* Permanently hide water request buttons */
+        .water-request {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+        
         .app-container {
             animation: fadeIn 0.8s ease-out;
         }
@@ -276,7 +284,11 @@
                 <div class="robot">
                     <img src="robot.jpg" alt="Robot hỗ trợ tưới cây" class="robot-image">
                     <div class="speech-bubble hidden" id="speech-bubble">
-                    
+                        <p id="speech-text">Cây của bạn cần nước rồi!</p>
+                        <div class="water-request hidden" id="water-request">
+                            <button id="yes-btn">Có</button>
+                            <button id="no-btn">Không</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -292,6 +304,16 @@
                     </div>
                     <div class="moisture-status">
                         Trạng thái: <span id="moisture-status">Ổn định</span>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>Điều Khiển Máy Bơm</h3>
+                    <div class="action-button-container">
+                        <button class="action-button" id="pump-button">
+                            <i class="fas fa-tint"></i>
+                            Tưới Ngay
+                        </button>
                     </div>
                 </div>
                 
@@ -349,16 +371,6 @@
                         <p>Phạm vi độ ẩm tối ưu: <span class="moisture-range">60% - 75%</span></p>
                         <p>Ngưỡng cần tưới: <span class="moisture-threshold">60%</span></p>
                         <p>Độ ẩm mục tiêu sau khi tưới: <span class="moisture-target">75%</span></p>
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <h3>Điều Khiển Máy Bơm</h3>
-                    <div class="action-button-container">
-                        <button class="action-button" id="pump-button">
-                            <i class="fas fa-tint"></i>
-                            Tưới Ngay
-                        </button>
                     </div>
                 </div>
                 
@@ -652,6 +664,21 @@
             moisturePercentage.textContent = initialMoisture + '%';
             moistureFill.style.width = initialMoisture + '%';
             
+            // Add a single initial greeting with a delay
+            // This is the ONLY place where we should initialize robot speech
+            // to avoid duplication
+            setTimeout(() => {
+                // Check if another script hasn't already shown the speech bubble
+                if (speechBubble && speechBubble.classList.contains('hidden')) {
+                    robotSpeak("Xin chào! Tôi sẽ giúp bạn chăm sóc cây.", false, 4000);
+                    
+                    // Show water request after initial greeting with delay
+                    setTimeout(() => {
+                        robotSpeak("Cây của bạn cần nước rồi!", true);
+                    }, 4500);
+                }
+            }, 2000);
+            
             // Custom popup function
             function showPopup(title, message) {
                 if (!customPopup) return;
@@ -769,22 +796,39 @@
             
             // Improved robot speech function to prevent overlaps
             function robotSpeak(message, showButtons = false, duration = 3000) {
+                console.log("Robot Speaking:", message, "Show Buttons:", showButtons);
+                
                 if (isRobotSpeaking) {
                     // If already speaking, queue this message
                     pendingSpeech = { message, showButtons, duration };
+                    console.log("Already speaking, queuing message");
                     return;
                 }
                 
                 isRobotSpeaking = true;
                 
-                if (robotSpeech && speechBubble && waterRequest) {
+                // Get fresh references to DOM elements to avoid stale references
+                const robotSpeech = document.getElementById('speech-text');
+                const speechBubble = document.getElementById('speech-bubble');
+                const waterRequest = document.getElementById('water-request');
+                
+                if (robotSpeech && speechBubble) {
+                    // Set content and show bubble
                     robotSpeech.textContent = message;
                     speechBubble.classList.remove('hidden');
+                    speechBubble.style.display = 'block';
                     
-                    if (showButtons) {
-                        waterRequest.classList.remove('hidden');
+                    // Handle buttons display
+                    if (waterRequest) {
+                        if (showButtons) {
+                            waterRequest.classList.remove('hidden');
+                            waterRequest.style.display = 'flex';
+                        } else {
+                            waterRequest.classList.add('hidden');
+                            waterRequest.style.display = 'none';
+                        }
                     } else {
-                        waterRequest.classList.add('hidden');
+                        console.error("Water request element not found!");
                     }
                     
                     // Auto hide after duration (unless showing buttons)
@@ -803,6 +847,11 @@
                             }
                         }, duration);
                     }
+                } else {
+                    console.error("Required speech elements not found:", 
+                                  !robotSpeech ? "speech-text missing" : "", 
+                                  !speechBubble ? "speech-bubble missing" : "");
+                    isRobotSpeaking = false;
                 }
             }
             
@@ -828,20 +877,31 @@
                         // Update moisture level with animation
                         updateMoistureLevel();
                         
-                        // Show thank you message (without buttons)
-                        robotSpeak("Yahhh, cảm ơn chủ nhân ạ!", false, 3000);
-                        
-                        // Show heart animation
-                        if (heartAnimation) {
-                            heartAnimation.classList.remove('hidden');
-                            heartAnimation.style.display = 'flex';
-                            
-                            // Hide heart animation after 4 seconds
-                            setTimeout(() => {
-                                heartAnimation.classList.add('hidden');
-                                heartAnimation.style.display = 'none';
-                            }, 4000);
+                        // Make sure speech bubble is hidden first to reset any previous state
+                        const speechBubble = document.getElementById('speech-bubble');
+                        if (speechBubble) {
+                            speechBubble.classList.add('hidden');
+                            isRobotSpeaking = false;
                         }
+                        
+                        // Small delay before showing thank you message
+                        setTimeout(() => {
+                            // Show thank you message (without buttons)
+                            robotSpeak("Yahhh, cảm ơn chủ nhân ạ!", false, 3000);
+                            
+                            // Show heart animation
+                            const heartAnimation = document.getElementById('heart-animation');
+                            if (heartAnimation) {
+                                heartAnimation.classList.remove('hidden');
+                                heartAnimation.style.display = 'flex';
+                                
+                                // Hide heart animation after 4 seconds
+                                setTimeout(() => {
+                                    heartAnimation.classList.add('hidden');
+                                    heartAnimation.style.display = 'none';
+                                }, 4000);
+                            }
+                        }, 300);
                     }, 3000);
                 } else {
                     console.error("ANIMATION ELEMENT NOT FOUND");
@@ -893,17 +953,6 @@
                     return false;
                 };
             }
-            
-            // Simplified sequence of robot speeches (only 3 cases)
-            setTimeout(() => {
-                // 1. Initial greeting
-                robotSpeak("Xin chào! Tôi sẽ giúp bạn chăm sóc cây.", false, 5000);
-                
-                // 2. Ask about watering after greeting (5 seconds after greeting ends)
-                setTimeout(() => {
-                    robotSpeak("Cây của bạn cần nước rồi!", true);
-                }, 5500);
-            }, 1000);
         });
 
         // Plant type selector functionality
