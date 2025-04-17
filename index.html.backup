@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="plant-types.css">
     <style>
         /* Entry animations */
         @keyframes fadeIn {
@@ -276,14 +275,18 @@
                 <div class="robot">
                     <img src="robot.jpg" alt="Robot hỗ trợ tưới cây" class="robot-image">
                     <div class="speech-bubble hidden" id="speech-bubble">
-                    
+                        <p id="speech-text">Cây của bạn cần nước rồi!</p>
+                        <div class="water-request hidden" id="water-request">
+                            <button id="yes-btn">Có</button>
+                            <button id="no-btn">Không</button>
+                        </div>
                     </div>
                 </div>
             </div>
             
             <div class="dashboard">
                 <div class="card">
-                    <h3>Độ Ẩm Đất</h3>
+                    <h3>Lượng Ẩm Đất</h3>
                     <div class="moisture-level">
                         <div class="moisture-indicator">
                             <div class="moisture-fill" id="moisture-fill"></div>
@@ -292,63 +295,6 @@
                     </div>
                     <div class="moisture-status">
                         Trạng thái: <span id="moisture-status">Ổn định</span>
-                    </div>
-                </div>
-                
-                <div class="control-card plant-type-container">
-                    <h3><i class="fas fa-leaf"></i> Loại cây trồng</h3>
-                    <select id="plant-type-select" class="plant-type-select">
-                        <option value="none">Chọn loại cây</option>
-                        <option value="orchid">Hoa Lan (Orchid)</option>
-                        <option value="cactus">Xương Rồng (Cactus)</option>
-                        <option value="fern">Dương Xỉ (Fern)</option>
-                        <option value="succulent">Sen Đá (Succulent)</option>
-                        <option value="herb">Thảo Mộc (Herb)</option>
-                    </select>
-                    
-                    <div id="plant-info-none" class="plant-info">
-                        <h4>Hãy chọn loại cây của bạn</h4>
-                        <p>Việc chọn đúng loại cây sẽ giúp hệ thống tối ưu hóa độ ẩm và chăm sóc cho cây của bạn tốt hơn.</p>
-                    </div>
-                    
-                    <div id="plant-info-orchid" class="plant-info">
-                        <h4>Hoa Lan (Orchid)</h4>
-                        <p>Hoa lan cần độ ẩm vừa phải và tránh tưới quá nhiều. Nên để đất khô giữa các lần tưới.</p>
-                        <p>Phạm vi độ ẩm tối ưu: <span class="moisture-range">65% - 75%</span></p>
-                        <p>Ngưỡng cần tưới: <span class="moisture-threshold">65%</span></p>
-                        <p>Độ ẩm mục tiêu sau khi tưới: <span class="moisture-target">75%</span></p>
-                    </div>
-                    
-                    <div id="plant-info-cactus" class="plant-info">
-                        <h4>Xương Rồng (Cactus)</h4>
-                        <p>Xương rồng thích môi trường khô, chỉ tưới khi đất hoàn toàn khô.</p>
-                        <p>Phạm vi độ ẩm tối ưu: <span class="moisture-range">30% - 40%</span></p>
-                        <p>Ngưỡng cần tưới: <span class="moisture-threshold">30%</span></p>
-                        <p>Độ ẩm mục tiêu sau khi tưới: <span class="moisture-target">40%</span></p>
-                    </div>
-                    
-                    <div id="plant-info-fern" class="plant-info">
-                        <h4>Dương Xỉ (Fern)</h4>
-                        <p>Dương xỉ ưa ẩm và cần được giữ ẩm đều đặn.</p>
-                        <p>Phạm vi độ ẩm tối ưu: <span class="moisture-range">70% - 85%</span></p>
-                        <p>Ngưỡng cần tưới: <span class="moisture-threshold">70%</span></p>
-                        <p>Độ ẩm mục tiêu sau khi tưới: <span class="moisture-target">85%</span></p>
-                    </div>
-                    
-                    <div id="plant-info-succulent" class="plant-info">
-                        <h4>Sen Đá (Succulent)</h4>
-                        <p>Sen đá cần ít nước, chỉ tưới khi đất khô hoàn toàn.</p>
-                        <p>Phạm vi độ ẩm tối ưu: <span class="moisture-range">35% - 45%</span></p>
-                        <p>Ngưỡng cần tưới: <span class="moisture-threshold">35%</span></p>
-                        <p>Độ ẩm mục tiêu sau khi tưới: <span class="moisture-target">45%</span></p>
-                    </div>
-                    
-                    <div id="plant-info-herb" class="plant-info">
-                        <h4>Thảo Mộc (Herb)</h4>
-                        <p>Các loại thảo mộc thường cần độ ẩm trung bình.</p>
-                        <p>Phạm vi độ ẩm tối ưu: <span class="moisture-range">60% - 75%</span></p>
-                        <p>Ngưỡng cần tưới: <span class="moisture-threshold">60%</span></p>
-                        <p>Độ ẩm mục tiêu sau khi tưới: <span class="moisture-target">75%</span></p>
                     </div>
                 </div>
                 
@@ -905,138 +851,6 @@
                 }, 5500);
             }, 1000);
         });
-
-        // Plant type selector functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize plant type from localStorage or default to 'none'
-            const savedPlantType = localStorage.getItem('selectedPlantType') || 'none';
-            const plantTypeSelect = document.getElementById('plant-type-select');
-            if (plantTypeSelect) {
-                plantTypeSelect.value = savedPlantType;
-                showPlantInfo(savedPlantType);
-                
-                // Add event listener for plant type changes
-                plantTypeSelect.addEventListener('change', function() {
-                    const selectedPlantType = this.value;
-                    showPlantInfo(selectedPlantType);
-                    localStorage.setItem('selectedPlantType', selectedPlantType);
-                    
-                    // Update moisture thresholds based on plant type
-                    updateMoistureThresholds(selectedPlantType);
-                    
-                    // Add to history
-                    const now = new Date();
-                    const timestamp = `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
-                    addToHistory(`Đã thay đổi loại cây thành ${getPlantTypeName(selectedPlantType)} (${timestamp})`);
-                });
-            }
-            
-            // Set initial moisture thresholds based on saved plant type
-            updateMoistureThresholds(savedPlantType);
-        });
-
-        // Function to show plant information based on selected type
-        function showPlantInfo(plantType) {
-            // Hide all plant info divs
-            const allPlantInfoDivs = document.querySelectorAll('.plant-info');
-            allPlantInfoDivs.forEach(div => {
-                div.style.display = 'none';
-            });
-            
-            // Show selected plant info
-            const selectedPlantInfo = document.getElementById(`plant-info-${plantType}`);
-            if (selectedPlantInfo) {
-                selectedPlantInfo.style.display = 'block';
-            } else {
-                // Fallback to 'none' if the selected plant type doesn't exist
-                const defaultPlantInfo = document.getElementById('plant-info-none');
-                if (defaultPlantInfo) {
-                    defaultPlantInfo.style.display = 'block';
-                }
-            }
-        }
-
-        // Function to update moisture thresholds based on plant type
-        function updateMoistureThresholds(plantType) {
-            let lowThreshold, targetMoisture;
-            
-            switch(plantType) {
-                case 'orchid':
-                    lowThreshold = 65;
-                    targetMoisture = 75;
-                    break;
-                case 'cactus':
-                    lowThreshold = 30;
-                    targetMoisture = 40;
-                    break;
-                case 'fern':
-                    lowThreshold = 70;
-                    targetMoisture = 85;
-                    break;
-                case 'succulent':
-                    lowThreshold = 35;
-                    targetMoisture = 45;
-                    break;
-                case 'herb':
-                    lowThreshold = 60;
-                    targetMoisture = 75;
-                    break;
-                default:
-                    // Default values for 'none' or unrecognized types
-                    lowThreshold = 60;
-                    targetMoisture = 90;
-            }
-            
-            // Store the thresholds as global variables or in localStorage
-            window.moistureLowThreshold = lowThreshold;
-            window.moistureTargetAfterWatering = targetMoisture;
-            localStorage.setItem('moistureLowThreshold', lowThreshold.toString());
-            localStorage.setItem('moistureTargetAfterWatering', targetMoisture.toString());
-            
-            console.log(`Updated moisture thresholds for ${plantType}: Low=${lowThreshold}%, Target=${targetMoisture}%`);
-        }
-
-        // Function to get plant type name in Vietnamese
-        function getPlantTypeName(plantType) {
-            switch(plantType) {
-                case 'orchid': return 'Hoa Lan';
-                case 'cactus': return 'Xương Rồng';
-                case 'fern': return 'Dương Xỉ';
-                case 'succulent': return 'Sen Đá';
-                case 'herb': return 'Thảo Mộc';
-                case 'none': return 'Chưa xác định';
-                default: return 'Loại cây không xác định';
-            }
-        }
-
-        // Modify the existing updateMoistureAfterWatering function to use plant-specific target levels
-        function updateMoistureAfterWatering() {
-            // Get the target moisture level based on plant type
-            const targetMoisture = parseInt(localStorage.getItem('moistureTargetAfterWatering')) || 90;
-            
-            // Set moisture level to target value (with small random variation)
-            const variation = Math.floor(Math.random() * 5); // 0-4% variation
-            const newMoistureLevel = targetMoisture + variation;
-            const cappedMoistureLevel = Math.min(newMoistureLevel, 99); // Cap at 99%
-            
-            // Update the moisture bar
-            const moistureBar = document.querySelector('.moisture-bar');
-            if (moistureBar) {
-                moistureBar.style.width = cappedMoistureLevel + '%';
-            }
-            
-            // Update the moisture percentage text
-            const moisturePercentage = document.querySelector('.moisture-percentage');
-            if (moisturePercentage) {
-                moisturePercentage.textContent = cappedMoistureLevel + '%';
-            }
-            
-            // Update status text
-            updateMoistureStatus(cappedMoistureLevel);
-            
-            console.log(`Moisture updated after watering: ${cappedMoistureLevel}%`);
-            return cappedMoistureLevel;
-        }
     </script>
 </body>
 </html> 
