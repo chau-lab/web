@@ -667,7 +667,7 @@ function updateWeatherDetails(date) {
 // Function to show robot notification
 function showRobotNotification() {
     if (robotSpeech && speechBubble) {
-        robotSpeech.textContent = "Cây của bạn cần nước rồi!";
+        robotSpeech.textContent = "Em khát nước, chủ nhân có thể cho em uống nước không ạ";
         speechBubble.classList.remove('hidden');
     }
 }

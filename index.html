@@ -284,7 +284,7 @@
                 <div class="robot">
                     <img src="robot.jpg" alt="Robot hỗ trợ tưới cây" class="robot-image">
                     <div class="speech-bubble hidden" id="speech-bubble">
-                        <p id="speech-text">Cây của bạn cần nước rồi!</p>
+                        <p id="speech-text">Em khát nước, chủ nhân có thể cho em uống nước không ạ</p>
                         <div class="water-request hidden" id="water-request">
                             <button id="yes-btn">Có</button>
                             <button id="no-btn">Không</button>
@@ -295,6 +295,16 @@
             
             <div class="dashboard">
                 <div class="card">
+                    <h3>Điều Khiển Máy Bơm</h3>
+                    <div class="action-button-container">
+                        <button class="action-button" id="pump-button">
+                            <i class="fas fa-tint"></i>
+                            Tưới Ngay
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="card">
                     <h3>Độ Ẩm Đất</h3>
                     <div class="moisture-level">
                         <div class="moisture-indicator">
@@ -304,16 +314,6 @@
                     </div>
                     <div class="moisture-status">
                         Trạng thái: <span id="moisture-status">Ổn định</span>
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <h3>Điều Khiển Máy Bơm</h3>
-                    <div class="action-button-container">
-                        <button class="action-button" id="pump-button">
-                            <i class="fas fa-tint"></i>
-                            Tưới Ngay
-                        </button>
                     </div>
                 </div>
                 
@@ -670,11 +670,11 @@
             setTimeout(() => {
                 // Check if another script hasn't already shown the speech bubble
                 if (speechBubble && speechBubble.classList.contains('hidden')) {
-                    robotSpeak("Xin chào! Tôi sẽ giúp bạn chăm sóc cây.", false, 4000);
+                    robotSpeak("Xin chào chủ nhân.", false, 4000);
                     
                     // Show water request after initial greeting with delay
                     setTimeout(() => {
-                        robotSpeak("Cây của bạn cần nước rồi!", true);
+                        robotSpeak("Em khát nước, chủ nhân có thể cho em uống nước không ạ ", true);
                     }, 4500);
                 }
             }, 2000);
