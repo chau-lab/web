@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aquagrow - Hệ Thống Tưới Cây Thông Minh</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>Aquagrow</h1>
+            <div class="profile-icon">
+                <i class="fas fa-user-circle"></i>
+            </div>
+        </header>
+        
+        <main>
+            <div class="robot-container">
+                <div class="robot">
+                    <img src="robot.jpg" alt="Robot hỗ trợ tưới cây" class="robot-image">
+                    <div class="speech-bubble hidden" id="speech-bubble">
+                        <p id="speech-text">Cây của bạn cần nước rồi!</p>
+                        <div class="water-request">
+                            <button id="yes-btn">Có</button>
+                            <button id="no-btn">Không</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dashboard">
+                <div class="card">
+                    <h3>Lượng Ẩm Đất</h3>
+                    <div class="moisture-level">
+                        <div class="moisture-indicator">
+                            <div class="moisture-fill" id="moisture-fill"></div>
+                        </div>
+                        <span id="moisture-percentage">65%</span>
+                    </div>
+                    <div class="moisture-status">
+                        Trạng thái: <span id="moisture-status">Ổn định</span>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>Điều Khiển Máy Bơm</h3>
+                    <div class="action-button-container">
+                        <button class="action-button" id="pump-button">
+                            <i class="fas fa-tint"></i>
+                            Tưới Ngay
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>Lịch Tưới</h3>
+                    <div class="schedule-form">
+                        <div class="form-group">
+                            <label for="water-time">Thời Gian Tưới:</label>
+                            <input type="time" id="water-time" value="07:00">
+                        </div>
+                        <div class="form-group">
+                            <label>Các Ngày:</label>
+                            <div class="days-container">
+                                <div class="day" data-day="T2">T2</div>
+                                <div class="day" data-day="T3">T3</div>
+                                <div class="day" data-day="T4">T4</div>
+                                <div class="day" data-day="T5">T5</div>
+                                <div class="day" data-day="T6">T6</div>
+                                <div class="day" data-day="T7">T7</div>
+                                <div class="day" data-day="CN">CN</div>
+                            </div>
+                        </div>
+                        <div class="action-button-container">
+                            <button class="action-button" id="set-schedule">
+                                <i class="fas fa-calendar-check"></i>
+                                Đặt Lịch
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>Lịch Sử Tưới</h3>
+                    <ul id="history-list">
+                        <li><span class="date">17/04/2025, 08:30</span> - Tưới tự động: 250ml</li>
+                        <li><span class="date">16/04/2025, 07:00</span> - Tưới theo lịch: 300ml</li>
+                        <li><span class="date">15/04/2025, 14:15</span> - Tưới thủ công: 200ml</li>
+                        <li><span class="date">14/04/2025, 07:00</span> - Tưới theo lịch: 300ml</li>
+                    </ul>
+                </div>
+                
+                <div class="card hourly-weather-card">
+                    <h3>Dự Báo Thời Tiết</h3>
+                    <div class="hourly-date-selector">
+                        <button class="date-nav-btn" id="prev-date"><i class="fas fa-chevron-left"></i></button>
+                        <div class="current-date">Thứ Bảy, 19/04/2025</div>
+                        <button class="date-nav-btn" id="next-date"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <div class="hourly-forecast-container">
+                        <div class="hourly-forecast-scroll">
+                            <div class="hourly-item">
+                                <div class="hour">06:00</div>
+                                <i class="fas fa-cloud-sun hourly-icon"></i>
+                                <div class="hourly-temp">26°C</div>
+                                <div class="hourly-precip">10%</div>
+                            </div>
+                            <div class="hourly-item">
+                                <div class="hour">07:00</div>
+                                <i class="fas fa-cloud-sun hourly-icon"></i>
+                                <div class="hourly-temp">27°C</div>
+                                <div class="hourly-precip">10%</div>
+                            </div>
+                            <div class="hourly-item">
+                                <div class="hour">08:00</div>
+                                <i class="fas fa-cloud-sun hourly-icon"></i>
+                                <div class="hourly-temp">28°C</div>
+                                <div class="hourly-precip">5%</div>
+                            </div>
+                            <div class="hourly-item">
+                                <div class="hour">09:00</div>
+                                <i class="fas fa-sun hourly-icon"></i>
+                                <div class="hourly-temp">29°C</div>
+                                <div class="hourly-precip">0%</div>
+                            </div>
+                            <div class="hourly-item">
+                                <div class="hour">10:00</div>
+                                <i class="fas fa-sun hourly-icon"></i>
+                                <div class="hourly-temp">30°C</div>
+                                <div class="hourly-precip">0%</div>
+                            </div>
+                            <div class="hourly-item">
+                                <div class="hour">11:00</div>
+                                <i class="fas fa-sun hourly-icon"></i>
+                                <div class="hourly-temp">31°C</div>
+                                <div class="hourly-precip">0%</div>
+                            </div>
+                            <div class="hourly-item">
+                                <div class="hour">12:00</div>
+                                <i class="fas fa-sun hourly-icon"></i>
+                                <div class="hourly-temp">32°C</div>
+                                <div class="hourly-precip">0%</div>
+                            </div>
+                            <div class="hourly-item">
+                                <div class="hour">13:00</div>
+                                <i class="fas fa-sun hourly-icon"></i>
+                                <div class="hourly-temp">33°C</div>
+                                <div class="hourly-precip">0%</div>
+                            </div>
+                            <div class="hourly-item">
+                                <div class="hour">14:00</div>
+                                <i class="fas fa-cloud hourly-icon"></i>
+                                <div class="hourly-temp">32°C</div>
+                                <div class="hourly-precip">5%</div>
+                            </div>
+                            <div class="hourly-item">
+                                <div class="hour">15:00</div>
+                                <i class="fas fa-cloud hourly-icon"></i>
+                                <div class="hourly-temp">31°C</div>
+                                <div class="hourly-precip">10%</div>
+                            </div>
+                            <div class="hourly-item">
+                                <div class="hour">16:00</div>
+                                <i class="fas fa-cloud-rain hourly-icon"></i>
+                                <div class="hourly-temp">29°C</div>
+                                <div class="hourly-precip">30%</div>
+                            </div>
+                            <div class="hourly-item">
+                                <div class="hour">17:00</div>
+                                <i class="fas fa-cloud-rain hourly-icon"></i>
+                                <div class="hourly-temp">28°C</div>
+                                <div class="hourly-precip">40%</div>
+                            </div>
+                            <div class="hourly-item">
+                                <div class="hour">18:00</div>
+                                <i class="fas fa-cloud-rain hourly-icon"></i>
+                                <div class="hourly-temp">27°C</div>
+                                <div class="hourly-precip">35%</div>
+                            </div>
+                            <div class="hourly-item">
+                                <div class="hour">19:00</div>
+                                <i class="fas fa-cloud hourly-icon"></i>
+                                <div class="hourly-temp">26°C</div>
+                                <div class="hourly-precip">20%</div>
+                            </div>
+                            <div class="hourly-item">
+                                <div class="hour">20:00</div>
+                                <i class="fas fa-cloud hourly-icon"></i>
+                                <div class="hourly-temp">25°C</div>
+                                <div class="hourly-precip">15%</div>
+                            </div>
+                            <div class="hourly-item">
+                                <div class="hour">21:00</div>
+                                <i class="fas fa-cloud-moon hourly-icon"></i>
+                                <div class="hourly-temp">24°C</div>
+                                <div class="hourly-precip">10%</div>
+                            </div>
+                            <div class="hourly-item">
+                                <div class="hour">22:00</div>
+                                <i class="fas fa-cloud-moon hourly-icon"></i>
+                                <div class="hourly-temp">24°C</div>
+                                <div class="hourly-precip">5%</div>
+                            </div>
+                            <div class="hourly-item">
+                                <div class="hour">23:00</div>
+                                <i class="fas fa-cloud-moon hourly-icon"></i>
+                                <div class="hourly-temp">23°C</div>
+                                <div class="hourly-precip">5%</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="weather-details">
+                        <div class="detail-item">
+                            <i class="fas fa-temperature-high"></i>
+                            <div>Cao nhất: 33°C</div>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-temperature-low"></i>
+                            <div>Thấp nhất: 23°C</div>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-wind"></i>
+                            <div>Gió: 10km/h</div>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-tint"></i>
+                            <div>Độ ẩm: 65%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Thông Tin Người Dùng</h3>
+                    <div class="profile-details">
+                        <div class="detail">
+                            <span class="label">Tên:</span>
+                            <span class="value">Nguyễn Văn A</span>
+                        </div>
+                        <div class="detail">
+                            <span class="label">Mã thiết bị:</span>
+                            <span class="value">RW-2023-1234</span>
+                        </div>
+                        <div class="detail">
+                            <span class="label">Ngày kích hoạt:</span>
+                            <span class="value">01/01/2025</span>
+                        </div>
+                        <div class="detail">
+                            <span class="label">Phiên bản phần mềm:</span>
+                            <span class="value">2.5.1</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <div id="pump-animation" class="hidden">
+        <div class="pump-modal">
+            <div class="watering-scene">
+                <div class="watering-can">
+                    <div class="watering-can-body"></div>
+                    <div class="watering-can-spout"></div>
+                    <div class="water-stream"></div>
+                </div>
+                <div class="plant-pot">
+                    <div class="pot"></div>
+                    <div class="soil"></div>
+                    <div class="plant">
+                        <div class="stem"></div>
+                        <div class="leaf leaf-left"></div>
+                        <div class="leaf leaf-right"></div>
+                        <div class="flower"></div>
+                    </div>
+                </div>
+                <div class="droplet-container">
+                    <div class="droplet d1"></div>
+                    <div class="droplet d2"></div>
+                    <div class="droplet d3"></div>
+                    <div class="droplet d4"></div>
+                    <div class="droplet d5"></div>
+                </div>
+            </div>
+            <div class="watering-text">Đang tưới cây...</div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+    
+    <!-- Temporary debug button for testing, can be removed in production -->
+    <div style="position: fixed; bottom: 10px; right: 10px; z-index: 1000;">
+        <button id="test-watering" style="padding: 10px; background: red; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Test Watering Animation
+        </button>
+    </div>
+    
+    <script>
+        // Emergency backup script to ensure the animation can be triggered
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("EMERGENCY SCRIPT LOADED");
+            
+            // Direct references to DOM elements
+            const pumpAnimation = document.getElementById('pump-animation');
+            const pumpButton = document.getElementById('pump-button');
+            const yesBtn = document.getElementById('yes-btn');
+            const noBtn = document.getElementById('no-btn');
+            const speechBubble = document.getElementById('speech-bubble');
+            const historyList = document.getElementById('history-list');
+            
+            console.log("EMERGENCY REFERENCES:", {
+                pumpAnimation,
+                pumpButton,
+                yesBtn,
+                noBtn,
+                speechBubble
+            });
+            
+            // Direct function to show animation
+            function showAnimation() {
+                console.log("EMERGENCY ANIMATION TRIGGERED");
+                if (pumpAnimation) {
+                    // Force remove hidden state
+                    pumpAnimation.classList.remove('hidden');
+                    pumpAnimation.classList.add('show-animation');
+                    pumpAnimation.style.display = 'flex';
+                    pumpAnimation.style.visibility = 'visible';
+                    pumpAnimation.style.opacity = '1';
+                    pumpAnimation.style.zIndex = '9999';
+                    
+                    // Log animation state for debugging
+                    console.log("ANIMATION ELEMENT:", pumpAnimation);
+                    console.log("ANIMATION STYLE:", {
+                        display: pumpAnimation.style.display,
+                        visibility: pumpAnimation.style.visibility,
+                        opacity: pumpAnimation.style.opacity,
+                        classList: [...pumpAnimation.classList]
+                    });
+                    
+                    // Hide after 5 seconds
+                    setTimeout(() => {
+                        pumpAnimation.classList.add('hidden');
+                        pumpAnimation.classList.remove('show-animation');
+                        pumpAnimation.style.display = 'none';
+                        pumpAnimation.style.visibility = 'hidden';
+                        pumpAnimation.style.opacity = '0';
+                    }, 5000);
+                } else {
+                    console.error("ANIMATION ELEMENT NOT FOUND");
+                    alert('Không tìm thấy phần tử hiệu ứng tưới nước!');
+                }
+            }
+            
+            // Add event listeners
+            if (pumpButton) {
+                pumpButton.onclick = function(e) {
+                    console.log("EMERGENCY PUMP BUTTON CLICKED");
+                    showAnimation();
+                    
+                    // Add history entry
+                    const now = new Date();
+                    const dateStr = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}, ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+                    
+                    if (historyList) {
+                        const newItem = document.createElement('li');
+                        newItem.innerHTML = `<span class="date">${dateStr}</span> - Tưới thủ công: 250ml`;
+                        historyList.insertBefore(newItem, historyList.firstChild);
+                    }
+                    
+                    return false; // Prevent default
+                };
+            }
+            
+            if (yesBtn) {
+                yesBtn.onclick = function(e) {
+                    console.log("EMERGENCY YES BUTTON CLICKED");
+                    showAnimation();
+                    
+                    // Hide speech bubble
+                    if (speechBubble) {
+                        speechBubble.classList.add('hidden');
+                    }
+                    
+                    // Add history entry
+                    const now = new Date();
+                    const dateStr = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}, ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+                    
+                    if (historyList) {
+                        const newItem = document.createElement('li');
+                        newItem.innerHTML = `<span class="date">${dateStr}</span> - Tưới theo yêu cầu: 250ml`;
+                        historyList.insertBefore(newItem, historyList.firstChild);
+                    }
+                    
+                    return false; // Prevent default
+                };
+            }
+            
+            if (noBtn) {
+                noBtn.onclick = function(e) {
+                    console.log("EMERGENCY NO BUTTON CLICKED");
+                    
+                    // Hide speech bubble
+                    if (speechBubble) {
+                        speechBubble.classList.add('hidden');
+                    }
+                    
+                    return false; // Prevent default
+                };
+            }
+            
+            // Test button
+            const testBtn = document.getElementById('test-watering');
+            if (testBtn) {
+                testBtn.onclick = function() {
+                    console.log("EMERGENCY TEST BUTTON CLICKED");
+                    showAnimation();
+                    return false;
+                };
+            }
+            
+            // Log info about the pump animation element
+            if (pumpAnimation) {
+                console.log("PUMP ANIMATION STYLES:", window.getComputedStyle(pumpAnimation));
+            }
+        });
+    </script>
+</body>
+</html> 
